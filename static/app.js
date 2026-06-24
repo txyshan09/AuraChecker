@@ -8,7 +8,7 @@ const focusReading = document.querySelector("#focus-reading");
 const bindingLabel = document.querySelector("#binding-label");
 const bindingScore = document.querySelector("#binding-score");
 const bindingCopy = document.querySelector("#binding-copy");
-const resultCards = document.querySelectorAll(".aura-card, .score-card, .binding-card");
+const resultCards = document.querySelectorAll(".result-line, .below-readout");
 
 function updateResult(reading) {
   document.documentElement.style.setProperty("--aura-color", reading.color);
@@ -26,12 +26,12 @@ function updateResult(reading) {
 
   if (reading.binding_score === null) {
     bindingScore.textContent = "--";
-    bindingCopy.textContent = "Add another name to test whether the two frequencies pull, clash, or bind.";
+    bindingCopy.textContent = "Type an account and bind the visual.";
     return;
   }
 
   bindingScore.textContent = `${reading.binding_score}%`;
-  bindingCopy.textContent = `${reading.name} and ${reading.binding_name} are reading as ${reading.binding_label.toLowerCase()}.`;
+  bindingCopy.textContent = `${reading.binding_name} / ${reading.binding_label.toLowerCase()}`;
 }
 
 form.addEventListener("submit", async (event) => {

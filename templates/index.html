@@ -5,160 +5,82 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta
       name="description"
-      content="Aura Checker reveals your current aura, energy score, and aura binding match."
+      content="Aura Checker binds an account to a clean visual aura reading."
     />
     <title>Aura Checker</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800;900&display=swap"
       rel="stylesheet"
     />
     <link rel="stylesheet" href="{{ url_for('static', path='styles.css') }}" />
     <script src="{{ url_for('static', path='app.js') }}" defer></script>
   </head>
   <body>
-    <main class="shell">
-      <nav class="topbar" aria-label="Primary navigation">
-        <a class="brand" href="/" aria-label="Aura Checker home">
-          <span class="brand-mark"></span>
-          <span>Aura Checker</span>
-        </a>
-        <div class="nav-actions">
-          <a href="#checker">Check</a>
-          <a class="launch-link" href="#binding">Binding</a>
+    <main class="page-shell">
+      <section class="stage" aria-label="Aura Checker">
+        <nav class="stage-nav">
+          <a class="brand" href="/" aria-label="Aura Checker home">
+            <span class="brand-mark"></span>
+            <span>Aura Checker</span>
+          </a>
+          <a class="login-link" href="#login">Login</a>
+        </nav>
+
+        <div class="stage-body">
+          <section class="visual-panel" aria-label="Aura visual">
+            <div class="visual-frame">
+              <span class="wave wave-one"></span>
+              <span class="wave wave-two"></span>
+              <span class="wave wave-three"></span>
+              <span class="node node-one"></span>
+              <span class="node node-two"></span>
+              <span class="node node-three"></span>
+              <p>visual</p>
+            </div>
+          </section>
+
+          <section id="checker" class="bind-panel" aria-label="Bind account">
+            <p class="microcopy">bind account</p>
+            <form id="aura-form">
+              <input name="name" type="hidden" value="You" />
+              <input name="birth_month" type="hidden" value="6" />
+              <input name="mood" type="hidden" value="locked-in" />
+              <input name="focus" type="hidden" value="fame" />
+
+              <label for="binding-account">Account</label>
+              <input
+                id="binding-account"
+                name="binding_name"
+                maxlength="40"
+                placeholder="@username"
+                autocomplete="off"
+              />
+              <button type="submit">bind</button>
+            </form>
+          </section>
+
+          <section class="result-line" aria-label="Aura result">
+            <div class="aura-chip">
+              <span id="aura-orb"></span>
+              <strong id="aura-name">Neon Sage</strong>
+            </div>
+            <p id="aura-meaning">sharp intuition, quiet confidence, and future-facing focus</p>
+            <p>
+              <span id="binding-label">Solo aura</span>
+              <span id="binding-score">--</span>
+            </p>
+          </section>
         </div>
-      </nav>
-
-      <section class="hero">
-        <div class="hero-copy">
-          <p class="eyebrow">Aura Lab v2 live</p>
-          <h1>Find your aura type and bind score.</h1>
-          <p class="lede">
-            A visual aura scanner for your current energy, manifestation path,
-            and compatibility pull. Built to feel like a shareable result card,
-            not a boring quiz.
-          </p>
-          <div class="hero-badges" aria-label="Aura modes">
-            <span>Energy scan</span>
-            <span>Bind test</span>
-            <span>Share result</span>
-          </div>
-        </div>
-
-        <section id="checker" class="checker-panel" aria-label="Aura checker form">
-          <div class="scanner-top">
-            <span></span>
-            <strong>Live scanner</strong>
-          </div>
-          <form id="aura-form">
-            <label>
-              Your name
-              <input name="name" maxlength="40" placeholder="Pragathesshan" required />
-            </label>
-
-            <label>
-              Birth month
-              <select name="birth_month" required>
-                <option value="1">January</option>
-                <option value="2">February</option>
-                <option value="3">March</option>
-                <option value="4">April</option>
-                <option value="5">May</option>
-                <option value="6">June</option>
-                <option value="7">July</option>
-                <option value="8">August</option>
-                <option value="9">September</option>
-                <option value="10">October</option>
-                <option value="11">November</option>
-                <option value="12">December</option>
-              </select>
-            </label>
-
-            <label>
-              Current vibe
-              <select name="mood" required>
-                <option value="locked-in">Locked in</option>
-                <option value="calm">Calm</option>
-                <option value="chaotic">Chaotic</option>
-                <option value="romantic">Romantic</option>
-                <option value="mysterious">Mysterious</option>
-              </select>
-            </label>
-
-            <label>
-              What are you manifesting?
-              <select name="focus" required>
-                <option value="fame">Fame</option>
-                <option value="money">Money</option>
-                <option value="love">Love</option>
-                <option value="school">School</option>
-                <option value="peace">Peace</option>
-              </select>
-            </label>
-
-            <label id="binding">
-              Aura binding with
-              <input name="binding_name" maxlength="40" placeholder="Optional name" />
-            </label>
-
-            <button type="submit">Reveal My Aura</button>
-          </form>
-        </section>
       </section>
 
-      <section class="result-grid" aria-label="Aura result">
-        <article class="aura-card">
-          <div class="aura-stage">
-            <div class="aura-ring"></div>
-            <div class="aura-orb" id="aura-orb"></div>
-          </div>
-          <p class="eyebrow">Current aura</p>
-          <h2 id="aura-name">Neon Sage</h2>
-          <p id="aura-meaning">
-            sharp intuition, quiet confidence, and future-facing focus
-          </p>
-        </article>
-
-        <article class="score-card">
-          <p class="eyebrow">Aura score</p>
-          <strong id="aura-score">{{ signal_score }}</strong>
-          <div class="score-track">
-            <span id="score-bar"></span>
-          </div>
-          <p id="focus-reading">
-            Your visibility aura is heating up. Post the thing that feels too
-            specific to ignore.
-          </p>
-        </article>
-
-        <article class="binding-card">
-          <p class="eyebrow">Aura binding</p>
-          <h2 id="binding-label">Solo aura</h2>
-          <strong id="binding-score">--</strong>
-          <p id="binding-copy">
-            Add another name to test whether the two frequencies pull, clash, or bind.
-          </p>
-        </article>
-      </section>
-
-      <section class="feed-strip" aria-label="Aura feed preview">
-        <article>
-          <span>Trending aura</span>
-          <strong>Violet Static</strong>
-        </article>
-        <article>
-          <span>Rare bind</span>
-          <strong>92% pull</strong>
-        </article>
-        <article>
-          <span>Daily mode</span>
-          <strong>Locked in</strong>
-        </article>
-        <article>
-          <span>Result style</span>
-          <strong>Glow card</strong>
-        </article>
+      <section class="below-readout" aria-label="Aura score">
+        <span>Aura score</span>
+        <strong id="aura-score">{{ signal_score }}</strong>
+        <div class="score-track"><span id="score-bar"></span></div>
+        <p id="focus-reading">Your visibility aura is heating up.</p>
+        <p id="binding-copy">Type an account and bind the visual.</p>
       </section>
     </main>
   </body>
