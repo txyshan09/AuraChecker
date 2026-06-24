@@ -52,7 +52,7 @@
             <section class="auth-panel" aria-label="Sign in or create account">
               <div class="auth-status">
                 <strong id="auth-state">Not signed in</strong>
-                <span id="auth-provider">Use Instagram to start.</span>
+                <span id="auth-provider">Use Google or Instagram to start.</span>
               </div>
 
               <div class="auth-actions">
@@ -61,6 +61,7 @@
               </div>
 
               <div class="auth-providers">
+                <button type="button" id="google-login">Continue with Google</button>
                 <button type="button" id="instagram-login">Continue with Instagram</button>
               </div>
 
@@ -114,8 +115,9 @@
           <div class="auth-card">
             <button type="button" class="close-auth" id="close-auth">×</button>
             <strong id="auth-modal-title">Sign in or create account</strong>
-            <p>Select a provider to continue with Instagram.</p>
+            <p>Select a provider to continue with Google or Instagram.</p>
             <div class="auth-providers-modal">
+              <button type="button" data-provider="google">Google</button>
               <button type="button" data-provider="instagram">Instagram</button>
             </div>
             <p class="auth-help">This is a simulated login flow for the visual binder.</p>
