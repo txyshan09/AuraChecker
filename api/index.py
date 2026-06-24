@@ -77,8 +77,7 @@ AURAS = [
 async def read_root(request: Request):
     user = request.session.get("user", None)
     try:
-        return templates.TemplateResponse("index.html", {
-            "request": request, 
+        return templates.TemplateResponse(request, "index.html", {
             "user": user,
             "signal_score": "0000" if not user else "9999"
         })
