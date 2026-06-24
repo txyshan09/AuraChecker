@@ -35,12 +35,13 @@ GOOGLE_CLIENT_SECRET = os.getenv("GOOGLE_CLIENT_SECRET")
 SECRET_KEY = os.getenv("SECRET_KEY", "aura-check-fallback-local-key-2026")
 
 # 4. COOKIE STORAGE CONFIGURATION FOR VERCEL HANDSHAKE
+IS_VERCEL = bool(os.getenv("VERCEL_URL"))
 app.add_middleware(
     SessionMiddleware, 
     secret_key=SECRET_KEY,
     session_cookie="aura_session",
     same_site="lax",
-    https_only=False if "localhost" in os.getenv("VERCEL_URL", "") else True
+    https_only=IS_VERCEL
 )
 
 # 5. GOOGLE OAUTH INITIALIZATION
@@ -93,11 +94,8 @@ async def read_root(request: Request):
 @app.get("/auth/login")
 @app.get("/api/auth/login")
 async def login(request: Request):
-    if "localhost" in str(request.base_url):
-        redirect_uri = "http://localhost:8000/auth/callback"
-    else:
-        redirect_uri = "https://aura-checker-ten.vercel.app/auth/callback"
-        
+    base = str(request.base_url).rstrip("/")
+    redirect_uri = f"{base}/auth/callback"
     return await oauth.google.authorize_redirect(request, redirect_uri)
 
 # 9. ROUTE: OAUTH CALLBACK HANDSHAKE (supporting both paths)

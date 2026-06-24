@@ -128,8 +128,8 @@ createAccountBtn.addEventListener("click", openAuthModal);
 loginBtn.addEventListener("click", openAuthModal);
 navCreateBtn?.addEventListener("click", openAuthModal);
 navLoginBtn?.addEventListener("click", openAuthModal);
-googleLogin.addEventListener("click", () => handleProviderSignIn("Google"));
-instagramLogin.addEventListener("click", () => handleProviderSignIn("Instagram"));
+// googleLogin is a real <a href="/auth/login"> — no JS needed, let it navigate
+instagramLogin.addEventListener("click", openAuthModal);
 closeAuth.addEventListener("click", closeAuthModal);
 
 authModalButtons.forEach((button) => {
