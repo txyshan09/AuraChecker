@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta
       name="description"
-      content="Aura Checker is a fast web intelligence interface built on FastAPI and Vercel."
+      content="Aura Checker reveals your current aura, energy score, and aura binding match."
     />
     <title>Aura Checker</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -15,6 +15,7 @@
       rel="stylesheet"
     />
     <link rel="stylesheet" href="{{ url_for('static', path='styles.css') }}" />
+    <script src="{{ url_for('static', path='app.js') }}" defer></script>
   </head>
   <body>
     <main class="shell">
@@ -24,81 +25,107 @@
           <span>Aura Checker</span>
         </a>
         <div class="nav-actions">
-          <a href="/api/health">API</a>
-          <a class="launch-link" href="#scan">Launch</a>
+          <a href="#checker">Check</a>
+          <a class="launch-link" href="#binding">Binding</a>
         </div>
       </nav>
 
       <section class="hero">
         <div class="hero-copy">
-          <p class="eyebrow">{{ scan_state }} web signal engine</p>
-          <h1>Own the signal before the algorithm owns the room.</h1>
+          <p class="eyebrow">{{ scan_state }} reading engine</p>
+          <h1>Check your aura. Test the bind. Read the signal.</h1>
           <p class="lede">
-            Aura Checker gives your project a premium home base: fast, searchable,
-            controlled by you, and ready for the next layer of automation.
+            Enter your vibe and Aura Checker generates a sleek aura profile,
+            energy score, and optional binding match with another person.
           </p>
-          <div class="hero-actions">
-            <a class="primary-action" href="#scan">Run Check</a>
-            <a class="secondary-action" href="https://vercel.com" rel="noreferrer">Deploy</a>
-          </div>
         </div>
 
-        <section id="scan" class="console" aria-label="Aura Checker signal dashboard">
-          <div class="console-header">
-            <span></span>
-            <span></span>
-            <span></span>
-          </div>
-          <div class="score-panel">
-            <p>Signal Score</p>
-            <strong>{{ signal_score }}</strong>
-          </div>
-          <div class="metric-grid">
-            <div>
-              <span>Latency</span>
-              <strong>18ms</strong>
-            </div>
-            <div>
-              <span>Control</span>
-              <strong>100%</strong>
-            </div>
-            <div>
-              <span>Stack</span>
-              <strong>FastAPI</strong>
-            </div>
-            <div>
-              <span>Deploy</span>
-              <strong>Vercel</strong>
-            </div>
-          </div>
-          <div class="pulse-row">
-            <span></span>
-            <span></span>
-            <span></span>
-            <span></span>
-            <span></span>
-            <span></span>
-            <span></span>
-            <span></span>
-          </div>
+        <section id="checker" class="checker-panel" aria-label="Aura checker form">
+          <form id="aura-form">
+            <label>
+              Your name
+              <input name="name" maxlength="40" placeholder="Pragathesshan" required />
+            </label>
+
+            <label>
+              Birth month
+              <select name="birth_month" required>
+                <option value="1">January</option>
+                <option value="2">February</option>
+                <option value="3">March</option>
+                <option value="4">April</option>
+                <option value="5">May</option>
+                <option value="6">June</option>
+                <option value="7">July</option>
+                <option value="8">August</option>
+                <option value="9">September</option>
+                <option value="10">October</option>
+                <option value="11">November</option>
+                <option value="12">December</option>
+              </select>
+            </label>
+
+            <label>
+              Current vibe
+              <select name="mood" required>
+                <option value="locked-in">Locked in</option>
+                <option value="calm">Calm</option>
+                <option value="chaotic">Chaotic</option>
+                <option value="romantic">Romantic</option>
+                <option value="mysterious">Mysterious</option>
+              </select>
+            </label>
+
+            <label>
+              What are you manifesting?
+              <select name="focus" required>
+                <option value="fame">Fame</option>
+                <option value="money">Money</option>
+                <option value="love">Love</option>
+                <option value="school">School</option>
+                <option value="peace">Peace</option>
+              </select>
+            </label>
+
+            <label id="binding">
+              Aura binding with
+              <input name="binding_name" maxlength="40" placeholder="Optional name" />
+            </label>
+
+            <button type="submit">Reveal Aura</button>
+          </form>
         </section>
       </section>
 
-      <section class="feature-strip" aria-label="Core launch checklist">
-        <article>
-          <span>01</span>
-          <h2>Code</h2>
-          <p>FastAPI backend with a polished front end and a health endpoint.</p>
+      <section class="result-grid" aria-label="Aura result">
+        <article class="aura-card">
+          <div class="aura-orb" id="aura-orb"></div>
+          <p class="eyebrow">Current aura</p>
+          <h2 id="aura-name">Neon Sage</h2>
+          <p id="aura-meaning">
+            sharp intuition, quiet confidence, and future-facing focus
+          </p>
         </article>
-        <article>
-          <span>02</span>
-          <h2>Ship</h2>
-          <p>Push to GitHub, import into Vercel, and get a public URL.</p>
+
+        <article class="score-card">
+          <p class="eyebrow">Aura score</p>
+          <strong id="aura-score">{{ signal_score }}</strong>
+          <div class="score-track">
+            <span id="score-bar"></span>
+          </div>
+          <p id="focus-reading">
+            Your visibility aura is heating up. Post the thing that feels too
+            specific to ignore.
+          </p>
         </article>
-        <article>
-          <span>03</span>
-          <h2>Grow</h2>
-          <p>Connect analytics, custom domain, and monetization after launch.</p>
+
+        <article class="binding-card">
+          <p class="eyebrow">Aura binding</p>
+          <h2 id="binding-label">Solo aura</h2>
+          <strong id="binding-score">--</strong>
+          <p id="binding-copy">
+            Add another name to test whether the two frequencies pull, clash, or bind.
+          </p>
         </article>
       </section>
     </main>
