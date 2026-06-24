@@ -13,8 +13,8 @@ from pydantic import BaseModel, Field
 # Locate base directory for robust path resolution on Vercel
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# Force FastAPI to treat the Vercel root as the base path
-app = FastAPI(title="Aura Checker", root_path="/api")
+# Initialize FastAPI app (no root_path — Vercel passes full paths to the ASGI handler)
+app = FastAPI(title="Aura Checker")
 
 # 1. FIXED STATIC & TEMPLATE PATHS (using absolute paths resolved from BASE_DIR)
 app.mount("/static", StaticFiles(directory=str(BASE_DIR / "static")), name="static")
