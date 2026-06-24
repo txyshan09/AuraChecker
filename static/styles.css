@@ -9,6 +9,8 @@
   --coral: #ff7d6e;
   --violet: #9b87ff;
   --aura-color: #4de2ff;
+  --hot: #ff4fd8;
+  --gold: #ffd166;
 }
 
 * {
@@ -25,10 +27,26 @@ body {
   font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   color: var(--ink);
   background:
-    radial-gradient(circle at 18% 18%, rgba(77, 226, 255, 0.18), transparent 28%),
-    radial-gradient(circle at 82% 12%, rgba(185, 247, 92, 0.12), transparent 24%),
-    radial-gradient(circle at 72% 72%, rgba(255, 125, 110, 0.14), transparent 24%),
-    linear-gradient(135deg, #070a10 0%, #111827 48%, #081417 100%);
+    conic-gradient(from 140deg at 50% -10%, rgba(77, 226, 255, 0.28), rgba(255, 79, 216, 0.12), rgba(185, 247, 92, 0.18), rgba(77, 226, 255, 0.28)),
+    radial-gradient(circle at 18% 18%, rgba(77, 226, 255, 0.2), transparent 28%),
+    radial-gradient(circle at 82% 12%, rgba(255, 79, 216, 0.16), transparent 24%),
+    radial-gradient(circle at 72% 72%, rgba(255, 209, 102, 0.13), transparent 24%),
+    linear-gradient(135deg, #060711 0%, #101629 48%, #061417 100%);
+  background-attachment: fixed;
+}
+
+body::before {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  content: "";
+  opacity: 0.36;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.055) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.045) 1px, transparent 1px);
+  background-size: 44px 44px;
+  mask-image: linear-gradient(to bottom, #000, transparent 82%);
 }
 
 a {
@@ -77,6 +95,7 @@ select {
     radial-gradient(circle at 30% 25%, #ffffff 0 7%, transparent 8%),
     linear-gradient(135deg, var(--cyan), var(--lime));
   box-shadow: 0 0 32px rgba(77, 226, 255, 0.24);
+  animation: markPulse 4s ease-in-out infinite;
 }
 
 .nav-actions a {
@@ -128,6 +147,7 @@ h1 {
   font-size: clamp(3rem, 6.7vw, 6.4rem);
   line-height: 0.94;
   letter-spacing: 0;
+  text-wrap: balance;
 }
 
 .lede {
@@ -136,6 +156,31 @@ h1 {
   color: var(--muted);
   font-size: clamp(1rem, 1.65vw, 1.22rem);
   line-height: 1.7;
+}
+
+.hero-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 28px;
+}
+
+.hero-badges span,
+.scanner-top {
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.07);
+  backdrop-filter: blur(18px);
+}
+
+.hero-badges span {
+  min-height: 36px;
+  display: inline-flex;
+  align-items: center;
+  padding: 0 14px;
+  color: var(--ink);
+  font-size: 0.86rem;
+  font-weight: 800;
 }
 
 .checker-panel,
@@ -149,7 +194,40 @@ h1 {
 }
 
 .checker-panel {
+  position: relative;
   padding: 22px;
+  overflow: hidden;
+}
+
+.checker-panel::before {
+  position: absolute;
+  inset: -1px;
+  z-index: -1;
+  content: "";
+  background: linear-gradient(135deg, rgba(77, 226, 255, 0.42), transparent 35%, rgba(255, 79, 216, 0.34));
+}
+
+.scanner-top {
+  min-height: 40px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+  padding: 0 14px;
+}
+
+.scanner-top span {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--lime);
+  box-shadow: 0 0 18px var(--lime);
+}
+
+.scanner-top strong {
+  font-size: 0.84rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
 form {
@@ -175,14 +253,16 @@ select {
   border-radius: 8px;
   padding: 0 14px;
   color: var(--ink);
-  background: rgba(5, 10, 18, 0.82);
+  background: rgba(5, 10, 18, 0.78);
   outline: none;
+  transition: border-color 180ms ease, box-shadow 180ms ease, transform 180ms ease;
 }
 
 input:focus,
 select:focus {
   border-color: rgba(77, 226, 255, 0.8);
   box-shadow: 0 0 0 3px rgba(77, 226, 255, 0.12);
+  transform: translateY(-1px);
 }
 
 button {
@@ -190,16 +270,23 @@ button {
   border: 0;
   border-radius: 8px;
   color: #041014;
-  background: linear-gradient(135deg, var(--cyan), var(--lime));
+  background: linear-gradient(135deg, var(--cyan), var(--lime) 58%, var(--gold));
   box-shadow: 0 18px 48px rgba(77, 226, 255, 0.18);
   cursor: pointer;
   font-weight: 900;
+  transition: transform 180ms ease, filter 180ms ease;
+}
+
+button:hover {
+  filter: saturate(1.15);
+  transform: translateY(-2px);
 }
 
 .result-grid {
   display: grid;
   grid-template-columns: 1.1fr 0.9fr 0.9fr;
   gap: 16px;
+  margin-top: 10px;
 }
 
 .aura-card,
@@ -207,6 +294,16 @@ button {
 .binding-card {
   min-height: 260px;
   padding: 24px;
+  backdrop-filter: blur(20px);
+  transition: transform 220ms ease, border-color 220ms ease, box-shadow 220ms ease;
+}
+
+.aura-card:hover,
+.score-card:hover,
+.binding-card:hover {
+  border-color: rgba(77, 226, 255, 0.38);
+  box-shadow: 0 28px 90px rgba(0, 0, 0, 0.42), 0 0 46px rgba(77, 226, 255, 0.1);
+  transform: translateY(-4px);
 }
 
 .aura-card {
@@ -214,15 +311,41 @@ button {
   overflow: hidden;
 }
 
+.aura-stage {
+  position: relative;
+  width: min(54vw, 290px);
+  aspect-ratio: 1;
+  display: grid;
+  place-items: center;
+  margin: 0 0 24px;
+}
+
+.aura-ring,
+.aura-orb {
+  position: absolute;
+  border-radius: 50%;
+}
+
+.aura-ring {
+  inset: 4%;
+  border: 1px solid color-mix(in srgb, var(--aura-color), white 18%);
+  background:
+    conic-gradient(from 0deg, transparent, color-mix(in srgb, var(--aura-color), white 18%), transparent, var(--hot), transparent);
+  opacity: 0.7;
+  filter: blur(0.2px);
+  animation: spinAura 8s linear infinite;
+  mask-image: radial-gradient(circle, transparent 57%, #000 59%, #000 65%, transparent 67%);
+}
+
 .aura-orb {
   width: min(54vw, 280px);
   aspect-ratio: 1;
-  margin: 0 0 24px;
-  border-radius: 50%;
   background:
-    radial-gradient(circle at 34% 28%, #ffffff 0 5%, transparent 6%),
-    radial-gradient(circle, var(--aura-color), transparent 68%);
+    radial-gradient(circle at 34% 28%, rgba(255, 255, 255, 0.94) 0 5%, transparent 6%),
+    radial-gradient(circle at 52% 44%, color-mix(in srgb, var(--aura-color), white 14%), transparent 34%),
+    radial-gradient(circle at 48% 52%, var(--aura-color), transparent 68%);
   filter: drop-shadow(0 0 38px color-mix(in srgb, var(--aura-color), transparent 55%));
+  animation: breatheAura 4.8s ease-in-out infinite;
 }
 
 .aura-card h2,
@@ -244,8 +367,8 @@ button {
   display: block;
   font-size: clamp(4rem, 8vw, 6.8rem);
   line-height: 0.92;
-  color: var(--cyan);
-  text-shadow: 0 0 42px rgba(77, 226, 255, 0.35);
+  color: color-mix(in srgb, var(--aura-color), white 18%);
+  text-shadow: 0 0 42px color-mix(in srgb, var(--aura-color), transparent 55%);
 }
 
 .score-track {
@@ -262,7 +385,7 @@ button {
   width: 0;
   height: 100%;
   border-radius: inherit;
-  background: linear-gradient(90deg, var(--violet), var(--cyan), var(--lime));
+  background: linear-gradient(90deg, var(--violet), var(--aura-color), var(--lime));
   transition: width 260ms ease;
 }
 
@@ -275,13 +398,87 @@ button {
   background-size: 28px 28px, 28px 28px, auto, auto;
 }
 
+.is-fresh {
+  animation: resultPop 520ms ease both;
+}
+
+.feed-strip {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  margin-top: 16px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  overflow: hidden;
+  background: var(--line);
+}
+
+.feed-strip article {
+  min-height: 112px;
+  padding: 18px;
+  background: rgba(7, 10, 16, 0.68);
+}
+
+.feed-strip span {
+  display: block;
+  margin-bottom: 12px;
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.feed-strip strong {
+  font-size: clamp(1.1rem, 2vw, 1.5rem);
+}
+
+@keyframes spinAura {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes breatheAura {
+  0%,
+  100% {
+    transform: scale(0.95);
+  }
+
+  50% {
+    transform: scale(1.03);
+  }
+}
+
+@keyframes markPulse {
+  0%,
+  100% {
+    box-shadow: 0 0 24px rgba(77, 226, 255, 0.2);
+  }
+
+  50% {
+    box-shadow: 0 0 34px rgba(185, 247, 92, 0.32);
+  }
+}
+
+@keyframes resultPop {
+  0% {
+    transform: translateY(10px) scale(0.98);
+  }
+
+  100% {
+    transform: translateY(0) scale(1);
+  }
+}
+
 @media (max-width: 920px) {
   .shell {
     width: min(100% - 24px, 720px);
   }
 
   .hero,
-  .result-grid {
+  .result-grid,
+  .feed-strip {
     grid-template-columns: 1fr;
   }
 
@@ -292,6 +489,10 @@ button {
 
   h1 {
     font-size: clamp(2.6rem, 13vw, 4.7rem);
+  }
+
+  .aura-stage {
+    width: min(72vw, 300px);
   }
 }
 

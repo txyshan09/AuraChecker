@@ -32,15 +32,25 @@
 
       <section class="hero">
         <div class="hero-copy">
-          <p class="eyebrow">{{ scan_state }} reading engine</p>
-          <h1>Check your aura. Test the bind. Read the signal.</h1>
+          <p class="eyebrow">Aura Lab v2 live</p>
+          <h1>Find your aura type and bind score.</h1>
           <p class="lede">
-            Enter your vibe and Aura Checker generates a sleek aura profile,
-            energy score, and optional binding match with another person.
+            A visual aura scanner for your current energy, manifestation path,
+            and compatibility pull. Built to feel like a shareable result card,
+            not a boring quiz.
           </p>
+          <div class="hero-badges" aria-label="Aura modes">
+            <span>Energy scan</span>
+            <span>Bind test</span>
+            <span>Share result</span>
+          </div>
         </div>
 
         <section id="checker" class="checker-panel" aria-label="Aura checker form">
+          <div class="scanner-top">
+            <span></span>
+            <strong>Live scanner</strong>
+          </div>
           <form id="aura-form">
             <label>
               Your name
@@ -92,14 +102,17 @@
               <input name="binding_name" maxlength="40" placeholder="Optional name" />
             </label>
 
-            <button type="submit">Reveal Aura</button>
+            <button type="submit">Reveal My Aura</button>
           </form>
         </section>
       </section>
 
       <section class="result-grid" aria-label="Aura result">
         <article class="aura-card">
-          <div class="aura-orb" id="aura-orb"></div>
+          <div class="aura-stage">
+            <div class="aura-ring"></div>
+            <div class="aura-orb" id="aura-orb"></div>
+          </div>
           <p class="eyebrow">Current aura</p>
           <h2 id="aura-name">Neon Sage</h2>
           <p id="aura-meaning">
@@ -126,6 +139,25 @@
           <p id="binding-copy">
             Add another name to test whether the two frequencies pull, clash, or bind.
           </p>
+        </article>
+      </section>
+
+      <section class="feed-strip" aria-label="Aura feed preview">
+        <article>
+          <span>Trending aura</span>
+          <strong>Violet Static</strong>
+        </article>
+        <article>
+          <span>Rare bind</span>
+          <strong>92% pull</strong>
+        </article>
+        <article>
+          <span>Daily mode</span>
+          <strong>Locked in</strong>
+        </article>
+        <article>
+          <span>Result style</span>
+          <strong>Glow card</strong>
         </article>
       </section>
     </main>
