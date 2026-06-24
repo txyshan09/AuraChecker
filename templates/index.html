@@ -17,7 +17,7 @@
     <link rel="stylesheet" href="{{ url_for('static', path='styles.css') }}" />
     <script src="{{ url_for('static', path='app.js') }}" defer></script>
   </head>
-  <body>
+  <body data-user="{% if user %}{{ user }}{% endif %}">
     <main class="page-shell">
       <section class="stage" aria-label="Aura Checker">
         <nav class="stage-nav">
@@ -26,8 +26,13 @@
             <span>Aura Checker</span>
           </a>
           <div class="account-actions" aria-label="Account actions">
-            <button type="button" class="create-link" id="nav-create-btn">Create account</button>
-            <button type="button" class="login-link" id="nav-login-btn">Login</button>
+            {% if user %}
+              <span class="user-greeting" style="display: inline-flex; align-items: center; padding: 0 16px; font-weight: 800; font-size: 0.9rem; color: var(--ink);">Hi, {{ user }}</span>
+              <a href="/auth/logout" class="login-link" id="nav-logout-btn" style="text-decoration: none; text-align: center; display: inline-flex; align-items: center; justify-content: center;">Logout</a>
+            {% else %}
+              <button type="button" class="create-link" id="nav-create-btn">Create account</button>
+              <button type="button" class="login-link" id="nav-login-btn">Login</button>
+            {% endif %}
           </div>
         </nav>
 
@@ -47,12 +52,12 @@
               <p>visual</p>
             </div>
           </section>
-
+<a href="/auth/login" id="google-login-live" style="text-decoration: none; text-align: center; display: inline-flex; align-items: center; justify-content: center;">Continue with Google</a>
           <aside class="action-panel" aria-label="Account and binding controls">
             <section class="auth-panel" aria-label="Sign in or create account">
               <div class="auth-status">
-                <strong id="auth-state">Not signed in</strong>
-                <span id="auth-provider">Use Google or Instagram to start.</span>
+                <strong id="auth-state">{% if user %}Welcome, {{ user }}{% else %}Not signed in{% endif %}</strong>
+                <span id="auth-provider">{% if user %}Account linked via Google{% else %}Use Google or Instagram to start.{% endif %}</span>
               </div>
 
               <div class="auth-actions">
@@ -61,7 +66,7 @@
               </div>
 
               <div class="auth-providers">
-                <button type="button" id="google-login">Continue with Google</button>
+                <a href="/auth/login" id="google-login" style="text-decoration: none; text-align: center; display: inline-flex; align-items: center; justify-content: center;">Continue with Google</a>
                 <button type="button" id="instagram-login">Continue with Instagram</button>
               </div>
 
@@ -117,7 +122,7 @@
             <strong id="auth-modal-title">Sign in or create account</strong>
             <p>Select a provider to continue with Google or Instagram.</p>
             <div class="auth-providers-modal">
-              <button type="button" data-provider="google">Google</button>
+              <a href="/auth/login" data-provider="google" style="text-decoration: none; text-align: center; display: inline-flex; align-items: center; justify-content: center;">Google</a>
               <button type="button" data-provider="instagram">Instagram</button>
             </div>
             <p class="auth-help">This is a simulated login flow for the visual binder.</p>

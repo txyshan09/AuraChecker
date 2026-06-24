@@ -1,21 +1,59 @@
+import os
 from pathlib import Path
 from typing import Literal
-
 from fastapi import FastAPI, Request
-from fastapi.responses import HTMLResponse
+from fastapi.responses import RedirectResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
+from fastapi.middleware.cors import CORSMiddleware
+from authlib.integrations.starlette_client import OAuth
+from starlette.middleware.sessions import SessionMiddleware
 from pydantic import BaseModel, Field
 
-
+# Locate base directory for robust path resolution on Vercel
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-app = FastAPI(title="Aura Checker")
-app.mount("/static", StaticFiles(directory=BASE_DIR / "static"), name="static")
+# Force FastAPI to treat the Vercel root as the base path
+app = FastAPI(title="Aura Checker", root_path="/api")
 
-templates = Jinja2Templates(directory=BASE_DIR / "templates")
+# 1. FIXED STATIC & TEMPLATE PATHS (using absolute paths resolved from BASE_DIR)
+app.mount("/static", StaticFiles(directory=str(BASE_DIR / "static")), name="static")
+templates = Jinja2Templates(directory=str(BASE_DIR / "templates"))
 
+# 2. CORS MIDDLEWARE FOR COOKIE TRANSMISSION
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["https://aura-checker-ten.vercel.app", "http://localhost:8000"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
+# 3. SECURE ENVIRONMENT VARIABLES LOADED FROM VERCEL
+GOOGLE_CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID")
+GOOGLE_CLIENT_SECRET = os.getenv("GOOGLE_CLIENT_SECRET")
+SECRET_KEY = os.getenv("SECRET_KEY", "aura-check-fallback-local-key-2026")
+
+# 4. COOKIE STORAGE CONFIGURATION FOR VERCEL HANDSHAKE
+app.add_middleware(
+    SessionMiddleware, 
+    secret_key=SECRET_KEY,
+    session_cookie="aura_session",
+    same_site="lax",
+    https_only=False if "localhost" in os.getenv("VERCEL_URL", "") else True
+)
+
+# 5. GOOGLE OAUTH INITIALIZATION
+oauth = OAuth()
+oauth.register(
+    name='google',
+    client_id=GOOGLE_CLIENT_ID,
+    client_secret=GOOGLE_CLIENT_SECRET,
+    server_metadata_url='https://accounts.google.com/.well-known/openid-configuration',
+    client_kwargs={'scope': 'openid email profile'}
+)
+
+# 6. PYDANTIC REQUEST MODEL FOR AURA CHECK
 class AuraRequest(BaseModel):
     name: str = Field(min_length=1, max_length=40)
     birth_month: int = Field(ge=1, le=12)
@@ -23,7 +61,6 @@ class AuraRequest(BaseModel):
     focus: Literal["money", "love", "school", "fame", "peace"]
     binding_name: str = Field(default="", max_length=40)
     binding_platform: str = Field(default="", max_length=40)
-
 
 AURAS = [
     ("Neon Sage", "#4de2ff", "sharp intuition, quiet confidence, and future-facing focus"),
@@ -33,24 +70,64 @@ AURAS = [
     ("Lime Halo", "#b9f75c", "fresh momentum, clean ambition, and comeback energy"),
 ]
 
+# 7. ROUTE: HOME PAGE RENDER (supporting both / and /api/)
+@app.get("/")
+@app.get("/api/")
+async def read_root(request: Request):
+    user = request.session.get("user", None)
+    return templates.TemplateResponse("index.html", {
+        "request": request, 
+        "user": user,
+        "signal_score": "0000" if not user else "9999"
+    })
 
-@app.get("/", response_class=HTMLResponse)
-async def home(request: Request):
-    return templates.TemplateResponse(
-        "index.html",
-        {
-            "request": request,
-            "signal_score": 0,
-            "scan_state": "Aura",
-        },
-    )
+# 8. ROUTE: GOOGLE AUTH LOGIN INITIALIZATION (supporting both paths)
+@app.get("/auth/login")
+@app.get("/api/auth/login")
+async def login(request: Request):
+    if "localhost" in str(request.base_url):
+        redirect_uri = "http://localhost:8000/auth/callback"
+    else:
+        redirect_uri = "https://aura-checker-ten.vercel.app/auth/callback"
+        
+    return await oauth.google.authorize_redirect(request, redirect_uri)
 
+# 9. ROUTE: OAUTH CALLBACK HANDSHAKE (supporting both paths)
+@app.get("/auth/callback")
+@app.get("/api/auth/callback")
+async def auth_callback(request: Request):
+    try:
+        token = await oauth.google.authorize_access_token(request)
+        user_info = token.get('userinfo')
+        
+        if user_info:
+            first_name = user_info.get("given_name", "User")
+            email = user_info.get("email", "")
+            
+            # Write session data securely
+            request.session["user"] = first_name
+            request.session["email"] = email
+            
+            return RedirectResponse(url="/")
+            
+    except Exception as e:
+        return JSONResponse(status_code=400, content={"error": f"OAuth Handshake Error: {str(e)}"})
 
+# 10. ROUTE: LOGOUT (supporting both paths)
+@app.get("/auth/logout")
+@app.get("/api/auth/logout")
+async def logout(request: Request):
+    request.session.clear()
+    return RedirectResponse(url="/")
+
+# 11. ROUTE: HEALTH CHECK (supporting both paths)
+@app.get("/health")
 @app.get("/api/health")
 async def health():
     return {"status": "ok", "service": "aura-checker"}
 
-
+# 12. ROUTE: AURA CALCULATION (supporting both paths)
+@app.post("/aura")
 @app.post("/api/aura")
 async def aura(payload: AuraRequest):
     allowed_platforms = {"google", "instagram", "tiktok", "x"}

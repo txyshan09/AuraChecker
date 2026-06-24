@@ -26,12 +26,15 @@ const platformButtons = document.querySelectorAll(".platform-picker button");
 let signedInProvider = null;
 let selectedPlatform = "";
 
-function setAuthState(provider) {
+function setAuthState(provider, displayName = null) {
   signedInProvider = provider;
-  authState.textContent = provider ? `${provider} signed in` : "Not signed in";
-  authProvider.textContent = provider
-    ? `Bound account access for ${provider}`
-    : "Use Google or Instagram to start.";
+  if (provider) {
+    authState.textContent = displayName ? `Welcome, ${displayName}` : `${provider} signed in`;
+    authProvider.textContent = `Bound account access for ${provider}`;
+  } else {
+    authState.textContent = "Not signed in";
+    authProvider.textContent = "Use Google or Instagram to start.";
+  }
 }
 
 function updateResult(reading) {
@@ -138,5 +141,10 @@ platformButtons.forEach((button) => {
 });
 
 scoreBar.style.width = "0%";
-setAuthState(null);
+const initialUser = document.body.dataset.user;
+if (initialUser) {
+  setAuthState("Google", initialUser);
+} else {
+  setAuthState(null);
+}
 selectPlatform("instagram");
