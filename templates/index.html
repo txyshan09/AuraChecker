@@ -25,12 +25,19 @@
             <span class="brand-mark"></span>
             <span>Aura Checker</span>
           </a>
-          <a class="login-link" href="#login">Login</a>
+          <div class="account-actions" aria-label="Account actions">
+            <button type="button" class="create-link" id="nav-create-btn">Create account</button>
+            <button type="button" class="login-link" id="nav-login-btn">Login</button>
+          </div>
         </nav>
 
         <div class="stage-body">
           <section class="visual-panel" aria-label="Aura visual">
             <div class="visual-frame">
+              <span class="motion motion-one"></span>
+              <span class="motion motion-two"></span>
+              <span class="motion motion-three"></span>
+              <span class="motion motion-four"></span>
               <span class="wave wave-one"></span>
               <span class="wave wave-two"></span>
               <span class="wave wave-three"></span>
@@ -41,37 +48,78 @@
             </div>
           </section>
 
-          <section id="checker" class="bind-panel" aria-label="Bind account">
-            <p class="microcopy">bind account</p>
-            <form id="aura-form">
-              <input name="name" type="hidden" value="You" />
-              <input name="birth_month" type="hidden" value="6" />
-              <input name="mood" type="hidden" value="locked-in" />
-              <input name="focus" type="hidden" value="fame" />
+          <aside class="action-panel" aria-label="Account and binding controls">
+            <section class="auth-panel" aria-label="Sign in or create account">
+              <div class="auth-status">
+                <strong id="auth-state">Not signed in</strong>
+                <span id="auth-provider">Use Instagram to start.</span>
+              </div>
 
-              <label for="binding-account">Account</label>
-              <input
-                id="binding-account"
-                name="binding_name"
-                maxlength="40"
-                placeholder="@username"
-                autocomplete="off"
-              />
-              <button type="submit">bind</button>
-            </form>
-          </section>
+              <div class="auth-actions">
+                <button type="button" id="create-account-btn">Create account</button>
+                <button type="button" id="login-btn">Login</button>
+              </div>
 
-          <section class="result-line" aria-label="Aura result">
-            <div class="aura-chip">
-              <span id="aura-orb"></span>
-              <strong id="aura-name">Neon Sage</strong>
+              <div class="auth-providers">
+                <button type="button" id="instagram-login">Continue with Instagram</button>
+              </div>
+
+              <p class="auth-copy">Sign in to unlock platform-specific bindings for Instagram, TikTok, X, and YouTube.</p>
+            </section>
+
+            <section id="checker" class="bind-panel" aria-label="Bind account">
+              <p class="microcopy">bind account</p>
+              <form id="aura-form">
+                <input name="name" type="hidden" value="You" />
+                <input name="birth_month" type="hidden" value="6" />
+                <input name="mood" type="hidden" value="locked-in" />
+                <input name="focus" type="hidden" value="fame" />
+                <input id="binding-platform" name="binding_platform" type="hidden" value="" />
+
+                <label for="binding-account">Account</label>
+                <input
+                  id="binding-account"
+                  name="binding_name"
+                  maxlength="40"
+                  placeholder="@username"
+                  autocomplete="off"
+                />
+
+                <div class="platform-picker" aria-label="Choose social platform">
+                  <button type="button" data-platform="google">Google</button>
+                  <button type="button" data-platform="instagram">Instagram</button>
+                  <button type="button" data-platform="tiktok">TikTok</button>
+                  <button type="button" data-platform="x">X</button>
+                </div>
+
+                <button type="submit">bind</button>
+              </form>
+            </section>
+
+            <section class="result-line" aria-label="Aura result">
+              <div class="aura-chip">
+                <span id="aura-orb"></span>
+                <strong id="aura-name"></strong>
+              </div>
+              <p id="aura-meaning"></p>
+              <p>
+                <span id="binding-label"></span>
+                <span id="binding-score"></span>
+              </p>
+            </section>
+          </aside>
+        </div>
+
+        <div class="auth-modal hidden" id="auth-modal" role="dialog" aria-modal="true" aria-label="Authentication options">
+          <div class="auth-card">
+            <button type="button" class="close-auth" id="close-auth">×</button>
+            <strong id="auth-modal-title">Sign in or create account</strong>
+            <p>Select a provider to continue with Instagram.</p>
+            <div class="auth-providers-modal">
+              <button type="button" data-provider="instagram">Instagram</button>
             </div>
-            <p id="aura-meaning">sharp intuition, quiet confidence, and future-facing focus</p>
-            <p>
-              <span id="binding-label">Solo aura</span>
-              <span id="binding-score">--</span>
-            </p>
-          </section>
+            <p class="auth-help">This is a simulated login flow for the visual binder.</p>
+          </div>
         </div>
       </section>
 

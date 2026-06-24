@@ -22,6 +22,7 @@ class AuraRequest(BaseModel):
     mood: Literal["calm", "locked-in", "chaotic", "romantic", "mysterious"]
     focus: Literal["money", "love", "school", "fame", "peace"]
     binding_name: str = Field(default="", max_length=40)
+    binding_platform: str = Field(default="", max_length=40)
 
 
 AURAS = [
@@ -39,7 +40,7 @@ async def home(request: Request):
         "index.html",
         {
             "request": request,
-            "signal_score": 88,
+            "signal_score": 0,
             "scan_state": "Aura",
         },
     )
@@ -52,7 +53,11 @@ async def health():
 
 @app.post("/api/aura")
 async def aura(payload: AuraRequest):
-    seed_text = f"{payload.name}|{payload.birth_month}|{payload.mood}|{payload.focus}|{payload.binding_name}"
+    allowed_platforms = {"google", "instagram", "tiktok", "x"}
+    if payload.binding_platform not in allowed_platforms:
+        payload.binding_platform = ""
+
+    seed_text = f"{payload.name}|{payload.birth_month}|{payload.mood}|{payload.focus}|{payload.binding_platform}|{payload.binding_name}"
     seed = sum((index + 1) * ord(char) for index, char in enumerate(seed_text))
     aura_name, aura_color, aura_meaning = AURAS[seed % len(AURAS)]
     score = 62 + seed % 38
@@ -70,6 +75,9 @@ async def aura(payload: AuraRequest):
         else:
             binding_label = "Different frequencies"
 
+        if payload.binding_platform:
+            binding_label = f"{payload.binding_platform.title()} binding"
+
     focus_lines = {
         "money": "Your money aura says move with proof, not panic. Build something small, useful, and repeatable.",
         "love": "Your love aura is selective. You attract better when you stop auditioning for attention.",
@@ -86,6 +94,7 @@ async def aura(payload: AuraRequest):
         "meaning": aura_meaning,
         "focus_reading": focus_lines[payload.focus],
         "binding_name": payload.binding_name.strip(),
+        "binding_platform": payload.binding_platform,
         "binding_score": binding_score,
         "binding_label": binding_label,
     }
