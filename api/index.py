@@ -75,11 +75,19 @@ AURAS = [
 @app.get("/api/")
 async def read_root(request: Request):
     user = request.session.get("user", None)
-    return templates.TemplateResponse("index.html", {
-        "request": request, 
-        "user": user,
-        "signal_score": "0000" if not user else "9999"
-    })
+    try:
+        return templates.TemplateResponse("index.html", {
+            "request": request, 
+            "user": user,
+            "signal_score": "0000" if not user else "9999"
+        })
+    except Exception as e:
+        import traceback
+        return JSONResponse(status_code=500, content={
+            "error": str(e),
+            "traceback": traceback.format_exc(),
+            "template_dir": str(BASE_DIR / "templates"),
+        })
 
 # 8. ROUTE: GOOGLE AUTH LOGIN INITIALIZATION (supporting both paths)
 @app.get("/auth/login")
